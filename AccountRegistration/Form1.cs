@@ -7,5 +7,10 @@ namespace AccountRegistration
         {
             InitializeComponent();
         }
+
+        private void textBox10_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

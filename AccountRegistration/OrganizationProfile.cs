@@ -94,16 +94,63 @@ namespace AccountRegistration
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            try 
+            try
             {
+                // FullName validation
+                if (string.IsNullOrWhiteSpace(txtLastName.Text) ||
+                    string.IsNullOrWhiteSpace(txtFirstName.Text) ||
+                    string.IsNullOrWhiteSpace(txtMiddleInitial.Text))
+                {
+                    throw new ArgumentNullException("Name fields cannot be empty.");
+                }
                 StudentInfoClass.SetFullName = FullName(txtLastName.Text,
                         txtFirstName.Text, txtMiddleInitial.Text);
-                StudentInfoClass.SetStudentNo = (int)StudentNumber(txtStudentNo.Text);
+
+                // StudentNo validation
+                if (!long.TryParse(txtStudentNo.Text, out long studNo))
+                {
+                    throw new FormatException("Student Number format is invalid.");
+                }
+                 if (studNo > int.MaxValue || studNo < int.MinValue)
+                {
+                    throw new OverflowException("Student Number is out of range for int.");
+                }
+                StudentInfoClass.SetStudentNo = (int)studNo;
+
+                // Program validation
+                 if (string.IsNullOrWhiteSpace(cbPrograms.Text))
+                {
+                    throw new IndexOutOfRangeException("Program selection is required.");
+                }
                 StudentInfoClass.SetProgram = cbPrograms.Text;
+
+                // Gender validation
+                if (string.IsNullOrWhiteSpace(cbGender.Text))
+                {
+                    throw new IndexOutOfRangeException("Gender selection is required.");
+                }
                 StudentInfoClass.SetGender = cbGender.Text;
+
+                // ContactNo validation
+                if (!Regex.IsMatch(txtContactNo.Text, @"^[0-9]{10,11}$"))
+                {
+                    throw new FormatException("Contact Number format is invalid.");
+                }
                 StudentInfoClass.SetContactNo = CContactNo(txtContactNo.Text);
+
+                // Age validation
+                if (!int.TryParse(txtAge.Text, out int age))
+                {
+                    throw new FormatException("Age format is invalid.");
+                }
+                if (age < 0 || age > 120)
+                {
+                    throw new OverflowException("Age is out of valid range.");
+                }
                 StudentInfoClass.SetAge = Age(txtAge.Text);
+
                 StudentInfoClass.SetBirthday = datePickerBirthday.Value.ToString("yyyy-MM-dd");
+
                 frmConfirmation frm = new frmConfirmation();
                 frm.ShowDialog();
             }
@@ -123,6 +170,10 @@ namespace AccountRegistration
             catch (IndexOutOfRangeException ex)
             {
                 MessageBox.Show("Index Error: " + ex.Message);
+            }
+            finally
+            {
+                Console.WriteLine("Registration attempt finished.");
             }
         }
     }

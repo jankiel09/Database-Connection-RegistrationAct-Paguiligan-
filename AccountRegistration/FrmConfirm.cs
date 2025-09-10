@@ -31,7 +31,7 @@ namespace AccountRegistration
             DelStudNo = new StudentInfoClass.DelegateNumber(StudentInfoClass.GetStudentNo);
 
         }
-
+     
         private void Form1_Load(object sender, EventArgs e)
         {
             lblStud.Text = DelStudNo(StudentInfoClass.StudentNo).ToString();

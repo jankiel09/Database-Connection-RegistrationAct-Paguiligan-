@@ -62,7 +62,7 @@ namespace AccountRegistration
             return _StudentNo;
         }
 
-        public long ContactNo(string Contact)
+        public long CContactNo(string Contact)
         {
             if (Regex.IsMatch(Contact, @"^[0-9]{10,11}$"))
             {
@@ -94,16 +94,36 @@ namespace AccountRegistration
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            StudentInfoClass.SetFullName = FullName(txtLastName.Text,
-                    txtFirstName.Text, txtMiddleInitial.Text);
-            StudentInfoClass.SetStudentNo = (int)StudentNumber(txtStudentNo.Text);
-            StudentInfoClass.SetProgram = cbPrograms.Text;
-            StudentInfoClass.SetGender = cbGender.Text;
-            StudentInfoClass.SetContactNo = (int)ContactNo(txtContactNo.Text);
-            StudentInfoClass.SetAge = Age(txtAge.Text);
-            StudentInfoClass.SetBirthday = datePickerBirthday.Value.ToString("yyyy-MM-dd");
-            frmConfirmation frm = new frmConfirmation();
-            frm.ShowDialog();
+            try 
+            {
+                StudentInfoClass.SetFullName = FullName(txtLastName.Text,
+                        txtFirstName.Text, txtMiddleInitial.Text);
+                StudentInfoClass.SetStudentNo = (int)StudentNumber(txtStudentNo.Text);
+                StudentInfoClass.SetProgram = cbPrograms.Text;
+                StudentInfoClass.SetGender = cbGender.Text;
+                StudentInfoClass.SetContactNo = CContactNo(txtContactNo.Text);
+                StudentInfoClass.SetAge = Age(txtAge.Text);
+                StudentInfoClass.SetBirthday = datePickerBirthday.Value.ToString("yyyy-MM-dd");
+                frmConfirmation frm = new frmConfirmation();
+                frm.ShowDialog();
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show("Format Error: " + ex.Message);
+            }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show("Null Error: " + ex.Message);
+            }
+            catch (OverflowException ex)
+            {
+                MessageBox.Show("Overflow Error: " + ex.Message);
+            }
+
+            catch (IndexOutOfRangeException ex)
+            {
+                MessageBox.Show("Index Error: " + ex.Message);
+            }
         }
     }
 }

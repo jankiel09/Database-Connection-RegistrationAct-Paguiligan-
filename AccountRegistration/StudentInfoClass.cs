@@ -12,7 +12,7 @@ namespace AccountRegistration
         public delegate string DelegateText(string txt);
 
         public static int SetStudentNo = 0;
-        public static int SetContactNo = 0;
+        public static long SetContactNo = 0;
         public static int SetAge;
 
         public static string SetProgram = " ";

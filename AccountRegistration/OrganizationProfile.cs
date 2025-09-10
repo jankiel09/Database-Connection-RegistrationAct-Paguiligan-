@@ -39,6 +39,20 @@ namespace AccountRegistration
                 cbPrograms.Items.Add(ListofProgram[i]);
             }
 
+
+            string[] Gender = new string[]
+            {
+                "Male",
+                "Female"
+            };
+
+            for (int i = 0; i < 2; i++)
+            {
+                cbGender.Items.Add(Gender[i]);
+            }
+
+
+
         }
         public long StudentNumber(string studNum)
         {
@@ -87,7 +101,7 @@ namespace AccountRegistration
             StudentInfoClass.SetGender = cbGender.Text;
             StudentInfoClass.SetContactNo = (int)ContactNo(txtContactNo.Text);
             StudentInfoClass.SetAge = Age(txtAge.Text);
-            StudentInfoClass.SetBirthday = datePickerBirthday.Value.ToString("yyyyMM-dd");
+            StudentInfoClass.SetBirthday = datePickerBirthday.Value.ToString("yyyy-MM-dd");
             frmConfirmation frm = new frmConfirmation();
             frm.ShowDialog();
         }

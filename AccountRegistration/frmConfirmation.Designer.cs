@@ -44,16 +44,18 @@
             lblBirthday = new Label();
             lblGender = new Label();
             lblContactNo = new Label();
+            button1 = new Button();
             SuspendLayout();
             // 
             // btnSubmit
             // 
-            btnSubmit.Location = new Point(127, 287);
+            btnSubmit.Location = new Point(192, 288);
             btnSubmit.Name = "btnSubmit";
-            btnSubmit.Size = new Size(84, 30);
+            btnSubmit.Size = new Size(98, 30);
             btnSubmit.TabIndex = 0;
             btnSubmit.Text = "Submit";
             btnSubmit.UseVisualStyleBackColor = true;
+            btnSubmit.Click += btnSubmit_Click;
             // 
             // label1
             // 
@@ -223,6 +225,16 @@
             lblContactNo.TabIndex = 14;
             lblContactNo.Text = "label14";
             // 
+            // button1
+            // 
+            button1.Location = new Point(48, 288);
+            button1.Name = "button1";
+            button1.Size = new Size(98, 30);
+            button1.TabIndex = 15;
+            button1.Text = "Cancel";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // frmConfirmation
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -230,6 +242,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(335, 339);
+            Controls.Add(button1);
             Controls.Add(lblContactNo);
             Controls.Add(lblGender);
             Controls.Add(lblBirthday);
@@ -269,5 +282,6 @@
         private Label lblBirthday;
         private Label lblGender;
         private Label lblContactNo;
+        private Button button1;
     }
 }

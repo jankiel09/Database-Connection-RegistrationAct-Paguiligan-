@@ -17,9 +17,27 @@ namespace AccountRegistration
         private int _Age;
         private long _ContactNo;
         private long _StudentNo;
+
         public OrganizationProfile()
         {
+            TestDatabaseOperations();
             InitializeComponent();
+        }
+
+        private void TestDatabaseOperations()
+        {
+            try
+            {
+                // testing connection
+                if (DatabaseConnection.TestConnection())
+                {
+                    MessageBox.Show("Database connection successful!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Test failed: {ex.Message}");
+            }
         }
 
         private void OrganizationProfile_Load(object sender, EventArgs e)
@@ -39,7 +57,6 @@ namespace AccountRegistration
                 cbPrograms.Items.Add(ListofProgram[i]);
             }
 
-
             string[] Gender = new string[]
             {
                 "Male",
@@ -50,15 +67,11 @@ namespace AccountRegistration
             {
                 cbGender.Items.Add(Gender[i]);
             }
-
-
-
         }
+
         public long StudentNumber(string studNum)
         {
-
             _StudentNo = long.Parse(studNum);
-
             return _StudentNo;
         }
 
@@ -68,7 +81,6 @@ namespace AccountRegistration
             {
                 _ContactNo = long.Parse(Contact);
             }
-
             return _ContactNo;
         }
 
@@ -78,7 +90,6 @@ namespace AccountRegistration
             {
                 _FullName = LastName + ", " + FirstName + ", " + MiddleInitial;
             }
-
             return _FullName;
         }
 
@@ -88,7 +99,6 @@ namespace AccountRegistration
             {
                 _Age = Int32.Parse(age);
             }
-
             return _Age;
         }
 
@@ -96,6 +106,14 @@ namespace AccountRegistration
         {
             try
             {
+                // testing database connection
+                if (!DatabaseConnection.TestConnection())
+                {
+                    MessageBox.Show("Cannot connect to database. Please check your connection.",
+                                  "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 // FullName validation
                 if (string.IsNullOrWhiteSpace(txtLastName.Text) ||
                     string.IsNullOrWhiteSpace(txtFirstName.Text) ||
@@ -103,22 +121,30 @@ namespace AccountRegistration
                 {
                     throw new ArgumentNullException("Name fields cannot be empty.");
                 }
-                StudentInfoClass.SetFullName = FullName(txtLastName.Text,
-                        txtFirstName.Text, txtMiddleInitial.Text);
+                StudentInfoClass.SetFullName = FullName(txtLastName.Text, txtFirstName.Text, txtMiddleInitial.Text);
 
                 // StudentNo validation
                 if (!long.TryParse(txtStudentNo.Text, out long studNo))
                 {
                     throw new FormatException("Student Number format is invalid.");
                 }
-                 if (studNo > int.MaxValue || studNo < int.MinValue)
+                if (studNo > int.MaxValue || studNo < int.MinValue)
                 {
                     throw new OverflowException("Student Number is out of range for int.");
                 }
+
+                // check if studentno. exists
+                if (StudentInfoClass.IsStudentNumberExists((int)studNo))
+                {
+                    MessageBox.Show($"Student Number {studNo} already exists. Please use a different number.",
+                                  "Duplicate Student Number", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 StudentInfoClass.SetStudentNo = (int)studNo;
 
                 // Program validation
-                 if (string.IsNullOrWhiteSpace(cbPrograms.Text))
+                if (string.IsNullOrWhiteSpace(cbPrograms.Text))
                 {
                     throw new IndexOutOfRangeException("Program selection is required.");
                 }
@@ -151,8 +177,19 @@ namespace AccountRegistration
 
                 StudentInfoClass.SetBirthday = datePickerBirthday.Value.ToString("yyyy-MM-dd");
 
+                // confirmatoin form
+                MessageBox.Show("Please review your information and click Submit to save to database.", "Review Information",
+                              MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // show confirmation form
                 frmConfirmation frm = new frmConfirmation();
                 frm.ShowDialog();
+
+                // clear form only if data is saved
+                if (frm.DataWasSaved)
+                {
+                    ClearForm();
+                }
             }
             catch (FormatException ex)
             {
@@ -166,15 +203,27 @@ namespace AccountRegistration
             {
                 MessageBox.Show("Overflow Error: " + ex.Message);
             }
-
             catch (IndexOutOfRangeException ex)
             {
                 MessageBox.Show("Index Error: " + ex.Message);
             }
             finally
             {
-                Console.WriteLine("Registration attempt finished.");
+                Console.WriteLine("Registration validation finished.");
             }
+        }
+
+        private void ClearForm()
+        {
+            txtLastName.Clear();
+            txtFirstName.Clear();
+            txtMiddleInitial.Clear();
+            txtStudentNo.Clear();
+            txtContactNo.Clear();
+            txtAge.Clear();
+            cbPrograms.SelectedIndex = -1;
+            cbGender.SelectedIndex = -1;
+            datePickerBirthday.Value = DateTime.Now;
         }
     }
 }
